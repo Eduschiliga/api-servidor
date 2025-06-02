@@ -1,0 +1,36 @@
+spring:
+  web:
+    resources:
+      add-mappings: true
+  application:
+    name: api-servidor
+  datasource:
+    url: jdbc:postgresql:${HOST_DB://localhost:5432}/dbservidor
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    properties: { }
+swagger:
+  username: ${SWAGGER_USERNAME:root}
+  password: ${SWAGGER_PASSWORD:root}
+
+jwt:
+  secret: ${JWT_SECRET:asdas5d1as51hgsdfjhdaja398498415asd1asfhs5dfssdf}
+  expiration: ${JWT_EXPIRATION:86400000}
+
+springdoc:
+  group-configs:
+    - group: public
+      paths-to-match: /api/**
+  show-actuator: true
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+server:
+  port: 8282
+
