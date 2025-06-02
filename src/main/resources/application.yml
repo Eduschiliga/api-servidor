@@ -34,3 +34,8 @@ springdoc:
 server:
   port: 8282
 
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.eduardo.apiservidor: DEBUG
+

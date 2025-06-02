@@ -2,15 +2,15 @@ package com.eduardo.apiservidor.config.security;
 
 import com.eduardo.apiservidor.entity.Usuario;
 import com.eduardo.apiservidor.repository.UsuarioRepository;
-import com.eduardo.apiservidor.service.TokenService;
-import exception.customizadas.jwt.TokenJWTException;
+import com.eduardo.apiservidor.repository.jwt.TokenInvalidoRepository;
+import com.eduardo.apiservidor.service.jwt.ListaPretaTokenService;
+import com.eduardo.apiservidor.service.jwt.TokenService;
+import com.eduardo.apiservidor.exception.customizadas.jwt.TokenJWTException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -22,6 +22,7 @@ import java.io.IOException;
 @AllArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
     private final TokenService tokenService;
+    private final ListaPretaTokenService listaPretaTokenService;
     private final UsuarioRepository usuarioRepository;
 
     @Override
@@ -30,28 +31,31 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         if (tokenJWT != null) {
             try {
+                if (listaPretaTokenService.isTokenInvalidado(tokenJWT)) {
+                    throw new TokenJWTException("Token invalidado");
+                }
+
                 if (tokenService.isTokenExpirado(tokenJWT)) {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("Token expirado.");
                     throw new TokenJWTException("Token expirado.");
                 }
 
                 String subject = tokenService.getSubject(tokenJWT);
 
                 Usuario usuario = usuarioRepository.findByEmail(subject)
-                        .orElseThrow(()-> new TokenJWTException("Usuário associado ao token não encontrado."));
+                        .orElseThrow(() -> new TokenJWTException("Usuário associado ao token não encontrado."));
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
+            } catch (TokenJWTException e) {
+                SecurityContextHolder.clearContext();
+                throw e;
             } catch (Exception e) {
-                throw new TokenJWTException("Token inválido: " + e.getMessage());
+                SecurityContextHolder.clearContext();
+                throw new TokenJWTException("Token inválido ou erro de processamento: " + e.getMessage());
             }
-
         }
         filterChain.doFilter(request, response);
-
     }
 
     private String recuperarToken(HttpServletRequest request) {

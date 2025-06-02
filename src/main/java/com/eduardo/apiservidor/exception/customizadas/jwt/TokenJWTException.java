@@ -1,4 +1,4 @@
-package exception.customizadas.jwt;
+package com.eduardo.apiservidor.exception.customizadas.jwt;
 
 import lombok.Getter;
 

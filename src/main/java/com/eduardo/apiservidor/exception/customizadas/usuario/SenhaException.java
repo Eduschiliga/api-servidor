@@ -1,4 +1,4 @@
-package exception.customizadas.usuario;
+package com.eduardo.apiservidor.exception.customizadas.usuario;
 
 import lombok.Getter;
 

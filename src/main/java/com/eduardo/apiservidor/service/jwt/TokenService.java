@@ -1,4 +1,4 @@
-package com.eduardo.apiservidor.service;
+package com.eduardo.apiservidor.service.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -6,7 +6,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.eduardo.apiservidor.entity.Usuario;
-import exception.customizadas.jwt.TokenJWTException;
+import com.eduardo.apiservidor.exception.customizadas.jwt.TokenJWTException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -63,5 +63,18 @@ public class TokenService {
   private Instant dataExpiracao() {
     long segundos = Long.parseLong(expiration) * 1000;
     return LocalDateTime.now().plusSeconds(segundos).toInstant(ZoneOffset.of("-03:00"));
+  }
+
+  public Date getDataExpiracao(String token) {
+    try {
+
+      DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(secret))
+              .withIssuer("System")
+              .build()
+              .verify(token);
+      return decodedJWT.getExpiresAt();
+    } catch (JWTVerificationException e) {
+      throw new TokenJWTException(e.getMessage());
+    }
   }
 }

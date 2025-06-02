@@ -1,11 +1,12 @@
-package com.eduardo.apiservidor.service;
+package com.eduardo.apiservidor.service.auth;
 
 import com.eduardo.apiservidor.entity.Usuario;
 import com.eduardo.apiservidor.mapper.UsuarioMapper;
 import com.eduardo.apiservidor.model.dto.usuario.UsuarioResponseDTO;
 import com.eduardo.apiservidor.model.request.LoginRequest;
 import com.eduardo.apiservidor.repository.UsuarioRepository;
-import exception.customizadas.usuario.UsuarioNaoEncontradoException;
+import com.eduardo.apiservidor.exception.customizadas.usuario.UsuarioNaoEncontradoException;
+import com.eduardo.apiservidor.service.jwt.TokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;

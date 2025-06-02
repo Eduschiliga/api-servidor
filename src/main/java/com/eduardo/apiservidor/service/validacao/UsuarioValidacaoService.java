@@ -4,7 +4,7 @@ import com.eduardo.apiservidor.entity.Usuario;
 import com.eduardo.apiservidor.model.dto.usuario.CriacaoUsuarioDTO;
 import com.eduardo.apiservidor.repository.UsuarioRepository;
 import com.eduardo.apiservidor.util.EmailUtil;
-import exception.customizadas.usuario.DadosInvalidosException;
+import com.eduardo.apiservidor.exception.customizadas.usuario.DadosInvalidosException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

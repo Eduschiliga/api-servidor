@@ -8,7 +8,7 @@ import com.eduardo.apiservidor.model.dto.usuario.CriacaoUsuarioDTO;
 import com.eduardo.apiservidor.model.dto.usuario.RetornoUsuarioDTO;
 import com.eduardo.apiservidor.model.dto.usuario.UsuarioDTO;
 import com.eduardo.apiservidor.repository.UsuarioRepository;
-import com.eduardo.apiservidor.service.AuthService;
+import com.eduardo.apiservidor.service.auth.AuthService;
 import com.eduardo.apiservidor.service.validacao.UsuarioValidacaoService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

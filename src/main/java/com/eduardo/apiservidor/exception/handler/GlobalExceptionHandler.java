@@ -1,18 +1,25 @@
-package exception.handler;
+package com.eduardo.apiservidor.exception.handler;
 
-import exception.customizadas.usuario.DadosInvalidosException;
-import exception.customizadas.usuario.SenhaException;
-import exception.customizadas.jwt.TokenJWTException;
-import exception.customizadas.usuario.UsuarioNaoEncontradoException;
+import com.eduardo.apiservidor.exception.customizadas.usuario.DadosInvalidosException;
+import com.eduardo.apiservidor.exception.customizadas.usuario.SenhaException;
+import com.eduardo.apiservidor.exception.customizadas.jwt.TokenJWTException;
+import com.eduardo.apiservidor.exception.customizadas.usuario.UsuarioNaoEncontradoException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+  @ExceptionHandler(AccessDeniedException.class)
+  public ResponseEntity<ApiError> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
+    ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Acesso negado. Você não tem permissão para acessar este recurso.");
+    return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
+  }
+
   @ExceptionHandler(UsernameNotFoundException.class)
   public ResponseEntity<ApiError> handlerUsernameNotFoundException(UsernameNotFoundException ex, HttpServletRequest request) {
     ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getMessage());
