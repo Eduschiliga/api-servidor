@@ -32,7 +32,7 @@ springdoc:
     path: /swagger-ui.html
 
 server:
-  port: 8282
+  port: 21500
 
 logging:
   level:

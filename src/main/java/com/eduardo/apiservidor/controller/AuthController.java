@@ -19,6 +19,7 @@ public class AuthController {
   private final ListaPretaTokenService listaPretaTokenService;
 
   @PostMapping("/login")
+  @CrossOrigin(origins = "*")
   @Operation(summary = "Realiza o login")
   public ResponseEntity<TokenDTO> handleLogin(@RequestBody LoginRequest loginRequest) {
     TokenDTO tokenDTO = new TokenDTO();
@@ -28,6 +29,7 @@ public class AuthController {
   }
 
   @PostMapping("/logout")
+  @CrossOrigin(origins = "*")
   @Operation(summary = "Realiza a invalidacao de um token")
   public ResponseEntity<MensagemSucessoDTO> handleLogout(@RequestHeader("Authorization") String token) {
     return ResponseEntity.ok().body(listaPretaTokenService.adicionarNaListaPreta(token));

@@ -22,6 +22,7 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
 
     @PostMapping
+    @CrossOrigin(origins = "*")
     @ResponseStatus(code = HttpStatus.CREATED)
     @Operation(summary = "Cria um usuário")
     public ResponseEntity<MensagemSucessoDTO> handleCriar(@RequestBody CriacaoUsuarioDTO criacaoUsuarioDTO) {
@@ -34,21 +35,24 @@ public class UsuarioController {
     }
 
     @GetMapping()
+    @CrossOrigin(origins = "*")
     @Operation(summary = "Busca os dados de um usuario")
     public ResponseEntity<RetornoUsuarioDTO> handleBuscarDados(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok().body(usuarioService.buscarUsuarioPeloToken(token));
     }
 
     @PutMapping()
+    @CrossOrigin(origins = "*")
     @Operation(summary = "Atualiza os dados de um usuário")
     public ResponseEntity<RetornoUsuarioDTO> handleAtualizar(@RequestHeader("Authorization") String token, @RequestBody AtualizarUsuarioDTO atualizarUsuarioDto) {
         return ResponseEntity.ok().body(usuarioService.atualizar(token, atualizarUsuarioDto));
     }
 
     @DeleteMapping()
+    @CrossOrigin(origins = "*")
     @Operation(summary = "Deleta um usuário")
     public ResponseEntity<Void> handleDeletar(@RequestHeader("Authorization") String token) {
         usuarioService.deletar(token);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }
