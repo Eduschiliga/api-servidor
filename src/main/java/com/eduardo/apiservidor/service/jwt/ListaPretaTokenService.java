@@ -21,6 +21,7 @@ public class ListaPretaTokenService {
 
     @Transactional
     public MensagemSucessoDTO adicionarNaListaPreta(String tokenJwt) {
+        log.info("Invalidando token - {}", tokenJwt);
         if (tokenJwt == null || tokenJwt.isEmpty()) {
             throw new TokenJWTException("Token nullo ou vazio");
         }
@@ -38,13 +39,14 @@ public class ListaPretaTokenService {
             log.warn("Não foi possível obter a data de expiração para o token: {}", token);
             throw new TokenJWTException("Não foi possível obter a data de expiração para o token");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new TokenJWTException(e.getMessage());
         }
     }
 
     @Transactional
     public boolean isTokenInvalidado(String token) {
         if (token == null || token.isEmpty()) {
+            log.error("Token nullo ou vazio");
             return false;
         }
         return invalidatedTokenRepository.existsById(token);

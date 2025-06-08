@@ -61,8 +61,8 @@ public class TokenService {
   }
 
   private Instant dataExpiracao() {
-    long segundos = Long.parseLong(expiration) * 1000;
-    return LocalDateTime.now().plusSeconds(segundos).toInstant(ZoneOffset.of("-03:00"));
+    return Instant.now().plusMillis(Long.parseLong(expiration));
+
   }
 
   public Date getDataExpiracao(String token) {

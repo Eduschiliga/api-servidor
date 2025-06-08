@@ -1,14 +1,13 @@
 package com.eduardo.apiservidor.service.auth;
 
 import com.eduardo.apiservidor.entity.Usuario;
-import com.eduardo.apiservidor.mapper.UsuarioMapper;
-import com.eduardo.apiservidor.model.dto.usuario.UsuarioResponseDTO;
+import com.eduardo.apiservidor.exception.customizadas.usuario.UsuarioNaoEncontradoException;
 import com.eduardo.apiservidor.model.request.LoginRequest;
 import com.eduardo.apiservidor.repository.UsuarioRepository;
-import com.eduardo.apiservidor.exception.customizadas.usuario.UsuarioNaoEncontradoException;
 import com.eduardo.apiservidor.service.jwt.TokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,12 +17,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService implements UserDetailsService {
     private final UsuarioRepository usuarioRepository;
-    private final UsuarioMapper usuarioMapper;
     private final TokenService tokenService;
     private final ApplicationContext applicationContext;
 
@@ -34,23 +32,27 @@ public class AuthService implements UserDetailsService {
     }
 
     public Usuario findUsuarioEntityByToken(String token) {
-        token = token.replace("Bearer ", "");
-        String subject = tokenService.getSubject(token);
+        log.info("Iniciando busca de usuário por token.");
 
-        return usuarioRepository.findByEmail(subject)
-                .orElseThrow(() -> new UsuarioNaoEncontradoException("Não foi possível encontrar o usuário: " + subject));
-    }
+        String tokenTratado = token.replace("Bearer ", "");
+        log.info("Extraindo 'subject' (email) do token.");
+        String subject = tokenService.getSubject(tokenTratado);
+        log.info("Subject extraído com sucesso: {}", subject);
 
-    public UsuarioResponseDTO findUsuarioByToken(String token) {
-        token = token.replace("Bearer ", "");
-        String subject = tokenService.getSubject(token);
+        log.info("Buscando usuário no banco de dados com o email: {}", subject);
         Usuario usuario = usuarioRepository.findByEmail(subject)
-                .orElseThrow(() -> new UsuarioNaoEncontradoException("Não foi possível encontrar o usuário: " + subject));
+                .orElseThrow(() -> {
+                    log.error("Falha ao buscar usuário. Nenhum usuário encontrado com o email: {}", subject);
+                    return new UsuarioNaoEncontradoException("Não foi possível encontrar o usuário: " + subject);
+                });
 
-        return usuarioMapper.usuarioToUsuarioResponseDTO(usuario);
+        log.info("Usuário encontrado com sucesso: {}", usuario.getEmail());
+        return usuario;
     }
 
     public String authLogin(@Valid LoginRequest loginRequest) {
+        log.info("Iniciando processo de login para o email: {}", loginRequest.getEmail());
+
         UsernamePasswordAuthenticationToken usernamePassAuthToken = new UsernamePasswordAuthenticationToken(
                 loginRequest.getEmail(),
                 loginRequest.getSenha()
@@ -58,9 +60,15 @@ public class AuthService implements UserDetailsService {
 
         AuthenticationManager authenticationManager = applicationContext.getBean(AuthenticationManager.class);
 
+        log.info("Autenticando credenciais para o email: {}", loginRequest.getEmail());
         Authentication authentication = authenticationManager.authenticate(usernamePassAuthToken);
+        log.info("Usuário autenticado com sucesso.");
 
-        return tokenService.gerarToken((Usuario) authentication.getPrincipal());
+        log.info("Gerando token JWT para o usuário: {}", ((Usuario) authentication.getPrincipal()).getEmail());
+        String token = tokenService.gerarToken((Usuario) authentication.getPrincipal());
+        log.info("Token gerado com sucesso: {}", token);
+
+        return token;
     }
 }
 

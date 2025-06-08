@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Slf4j
 @Component
 @AllArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
@@ -31,13 +33,17 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         if (tokenJWT != null) {
             try {
+                log.info("Verificando se o token não está na lista de tokens inválidos");
                 if (listaPretaTokenService.isTokenInvalidado(tokenJWT)) {
                     throw new TokenJWTException("Token invalidado");
                 }
+                log.info("Verificando se o token não está espirado");
 
                 if (tokenService.isTokenExpirado(tokenJWT)) {
                     throw new TokenJWTException("Token expirado.");
                 }
+
+                log.info("Token válido");
 
                 String subject = tokenService.getSubject(tokenJWT);
 

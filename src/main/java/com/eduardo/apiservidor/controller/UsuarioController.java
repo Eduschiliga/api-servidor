@@ -51,8 +51,8 @@ public class UsuarioController {
     @DeleteMapping()
     @CrossOrigin(origins = "*")
     @Operation(summary = "Deleta um usuário")
-    public ResponseEntity<Void> handleDeletar(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<MensagemSucessoDTO> handleDeletar(@RequestHeader("Authorization") String token) {
         usuarioService.deletar(token);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(new MensagemSucessoDTO("Usuário deletado com sucesso."));
     }
 }

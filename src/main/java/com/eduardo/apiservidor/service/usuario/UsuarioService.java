@@ -1,6 +1,7 @@
 package com.eduardo.apiservidor.service.usuario;
 
 import com.eduardo.apiservidor.entity.Usuario;
+import com.eduardo.apiservidor.exception.customizadas.padrao.FalhaProcessamentoException;
 import com.eduardo.apiservidor.mapper.UsuarioMapper;
 import com.eduardo.apiservidor.model.dto.mensagem.MensagemSucessoDTO;
 import com.eduardo.apiservidor.model.dto.usuario.AtualizarUsuarioDTO;
@@ -31,7 +32,7 @@ public class UsuarioService {
     public MensagemSucessoDTO salvar(CriacaoUsuarioDTO criacaoUsuarioDTO) {
         log.info("Salvando usuário: {}", criacaoUsuarioDTO);
         usuarioValidacaoService.validarUsuario(criacaoUsuarioDTO);
-        log.info("Dados de usuário validados: {}", criacaoUsuarioDTO);
+        log.info("Dados de usuário válido: {}", criacaoUsuarioDTO);
 
         salvarUsuario(criacaoUsuarioDTO);
 
@@ -40,13 +41,17 @@ public class UsuarioService {
 
     @Transactional
     protected void salvarUsuario(CriacaoUsuarioDTO criacaoUsuarioDTO) {
-        Usuario usuario = usuarioMapper.usuarioCriacaoDTOtoUsuario(criacaoUsuarioDTO);
+        try {
+            Usuario usuario = usuarioMapper.usuarioCriacaoDTOtoUsuario(criacaoUsuarioDTO);
 
-        usuario.setUsuarioId(null);
-        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+            usuario.setUsuarioId(null);
+            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
 
-        usuario = usuarioRepository.save(usuario);
-        log.info("Usuário salvo com sucesso: {}", usuario);
+            usuario = usuarioRepository.save(usuario);
+            log.info("Usuário salvo com sucesso: {}", usuario);
+        } catch (Exception e) {
+            throw new FalhaProcessamentoException("Erro ao processar usuário:" + e.getMessage());
+        }
     }
 
 
