@@ -1,11 +1,10 @@
 package com.eduardo.apiservidor.config.security;
 
 import com.eduardo.apiservidor.entity.Usuario;
+import com.eduardo.apiservidor.exception.customizadas.jwt.TokenJWTException;
 import com.eduardo.apiservidor.repository.UsuarioRepository;
-import com.eduardo.apiservidor.repository.jwt.TokenInvalidoRepository;
 import com.eduardo.apiservidor.service.jwt.ListaPretaTokenService;
 import com.eduardo.apiservidor.service.jwt.TokenService;
-import com.eduardo.apiservidor.exception.customizadas.jwt.TokenJWTException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +23,7 @@ import java.io.IOException;
 @AllArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
     private final TokenService tokenService;
-    private final ListaPretaTokenService listaPretaTokenService;
+        private final ListaPretaTokenService listaPretaTokenService;
     private final UsuarioRepository usuarioRepository;
 
     @Override

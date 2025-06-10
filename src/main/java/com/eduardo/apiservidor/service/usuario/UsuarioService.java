@@ -82,7 +82,7 @@ public class UsuarioService {
 
         log.info("Atualizando dados do Usuario: {}", usuario);
         usuario.setNome(atualizarUsuarioDto.getNome());
-        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        usuario.setSenha(passwordEncoder.encode(atualizarUsuarioDto.getSenha()));
         usuario = usuarioRepository.save(usuario);
         log.info("Dados atualizados do Usuario: {}", usuario);
 
