@@ -1,6 +1,6 @@
 package com.eduardo.apiservidor.service.usuario;
 
-import com.eduardo.apiservidor.entity.Usuario;
+import com.eduardo.apiservidor.entity.usuario.Usuario;
 import com.eduardo.apiservidor.exception.customizadas.padrao.FalhaProcessamentoException;
 import com.eduardo.apiservidor.mapper.UsuarioMapper;
 import com.eduardo.apiservidor.model.dto.mensagem.MensagemSucessoDTO;

@@ -1,6 +1,6 @@
 package com.eduardo.apiservidor.config.security;
 
-import com.eduardo.apiservidor.entity.Usuario;
+import com.eduardo.apiservidor.entity.usuario.Usuario;
 import com.eduardo.apiservidor.exception.customizadas.jwt.TokenJWTException;
 import com.eduardo.apiservidor.repository.UsuarioRepository;
 import com.eduardo.apiservidor.service.jwt.ListaPretaTokenService;

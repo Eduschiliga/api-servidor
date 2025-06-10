@@ -1,6 +1,6 @@
 package com.eduardo.apiservidor.service.auth;
 
-import com.eduardo.apiservidor.entity.Usuario;
+import com.eduardo.apiservidor.entity.usuario.Usuario;
 import com.eduardo.apiservidor.exception.customizadas.usuario.UsuarioNaoEncontradoException;
 import com.eduardo.apiservidor.model.request.LoginRequest;
 import com.eduardo.apiservidor.repository.UsuarioRepository;
