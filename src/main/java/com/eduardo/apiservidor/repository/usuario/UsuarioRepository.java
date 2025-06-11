@@ -1,4 +1,4 @@
-package com.eduardo.apiservidor.repository;
+package com.eduardo.apiservidor.repository.usuario;
 
 import com.eduardo.apiservidor.entity.usuario.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;

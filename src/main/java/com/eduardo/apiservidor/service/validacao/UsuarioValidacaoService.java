@@ -2,7 +2,7 @@ package com.eduardo.apiservidor.service.validacao;
 
 import com.eduardo.apiservidor.entity.usuario.Usuario;
 import com.eduardo.apiservidor.model.dto.usuario.CriacaoUsuarioDTO;
-import com.eduardo.apiservidor.repository.UsuarioRepository;
+import com.eduardo.apiservidor.repository.usuario.UsuarioRepository;
 import com.eduardo.apiservidor.util.EmailUtil;
 import com.eduardo.apiservidor.exception.customizadas.usuario.DadosInvalidosException;
 import lombok.RequiredArgsConstructor;

@@ -1,5 +1,6 @@
 package com.eduardo.apiservidor.exception.handler;
 
+import com.eduardo.apiservidor.exception.customizadas.email.DadosInvalidosRascunhoException;
 import com.eduardo.apiservidor.exception.customizadas.jwt.TokenJWTException;
 import com.eduardo.apiservidor.exception.customizadas.padrao.FalhaProcessamentoException;
 import com.eduardo.apiservidor.exception.customizadas.usuario.DadosInvalidosException;
@@ -15,6 +16,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(DadosInvalidosRascunhoException.class)
+    public ResponseEntity<ApiError> handleFalhaDadosInvalidosRascunhoException(DadosInvalidosRascunhoException ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(FalhaProcessamentoException.class)
     public ResponseEntity<ApiError> handleFalhaProcessamentoException(FalhaProcessamentoException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage());

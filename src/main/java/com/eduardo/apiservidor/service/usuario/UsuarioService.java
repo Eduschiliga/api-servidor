@@ -2,13 +2,14 @@ package com.eduardo.apiservidor.service.usuario;
 
 import com.eduardo.apiservidor.entity.usuario.Usuario;
 import com.eduardo.apiservidor.exception.customizadas.padrao.FalhaProcessamentoException;
+import com.eduardo.apiservidor.exception.customizadas.usuario.UsuarioNaoEncontradoException;
 import com.eduardo.apiservidor.mapper.UsuarioMapper;
 import com.eduardo.apiservidor.model.dto.mensagem.MensagemSucessoDTO;
 import com.eduardo.apiservidor.model.dto.usuario.AtualizarUsuarioDTO;
 import com.eduardo.apiservidor.model.dto.usuario.CriacaoUsuarioDTO;
 import com.eduardo.apiservidor.model.dto.usuario.RetornoUsuarioDTO;
 import com.eduardo.apiservidor.model.dto.usuario.UsuarioDTO;
-import com.eduardo.apiservidor.repository.UsuarioRepository;
+import com.eduardo.apiservidor.repository.usuario.UsuarioRepository;
 import com.eduardo.apiservidor.service.auth.AuthService;
 import com.eduardo.apiservidor.service.validacao.UsuarioValidacaoService;
 import jakarta.transaction.Transactional;
@@ -101,5 +102,9 @@ public class UsuarioService {
 
         usuarioRepository.delete(usuario);
         log.info("Usuário deletado com sucesso");
+    }
+
+    public Usuario buscarUsuarioPeloEmail(String email) {
+        return usuarioRepository.findByEmail(email).orElse(null);
     }
 }
