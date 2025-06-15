@@ -30,7 +30,7 @@ public class Email {
     @Column(name = "email_remetente")
     private String emailRemetente;
 
-    @Column(name = "corpo")
+    @Column(name = "corpo", length = 1000000)
     private String corpo;
 
     @Column(name = "data_envio")
