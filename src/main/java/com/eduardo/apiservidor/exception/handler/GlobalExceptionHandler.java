@@ -1,6 +1,8 @@
 package com.eduardo.apiservidor.exception.handler;
 
 import com.eduardo.apiservidor.exception.customizadas.email.DadosInvalidosRascunhoException;
+import com.eduardo.apiservidor.exception.customizadas.email.EmailNaoEncontradoException;
+import com.eduardo.apiservidor.exception.customizadas.email.RemetenteInvalidoException;
 import com.eduardo.apiservidor.exception.customizadas.jwt.TokenJWTException;
 import com.eduardo.apiservidor.exception.customizadas.padrao.FalhaProcessamentoException;
 import com.eduardo.apiservidor.exception.customizadas.usuario.DadosInvalidosException;
@@ -16,6 +18,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(RemetenteInvalidoException.class)
+    public ResponseEntity<ApiError> handleEmailRemetenteInvalidoException(RemetenteInvalidoException ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EmailNaoEncontradoException.class)
+    public ResponseEntity<ApiError> handleEmailNaoEncontradoException(EmailNaoEncontradoException ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(DadosInvalidosRascunhoException.class)
     public ResponseEntity<ApiError> handleFalhaDadosInvalidosRascunhoException(DadosInvalidosRascunhoException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
@@ -43,7 +57,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UsuarioNaoEncontradoException.class)
     public ResponseEntity<ApiError> handlerUsuarioNaoEncontradoException(UsuarioNaoEncontradoException ex, HttpServletRequest request) {
-        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, "Usuário não encontrado");
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getMessage());
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 

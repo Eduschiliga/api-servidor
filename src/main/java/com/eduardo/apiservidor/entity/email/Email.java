@@ -14,26 +14,26 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "token_invalido")
+@Table(name = "email")
 public class Email {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "email_id", nullable = false)
+    @Column(name = "email_id")
     private Long emailId;
 
-    @Column(name = "assunto", nullable = false)
+    @Column(name = "assunto")
     private String assunto;
 
-    @Column(name = "email_destinatario", nullable = false)
+    @Column(name = "email_destinatario")
     private String emailDestinatario;
 
-    @Column(name = "email_remetente", nullable = false)
+    @Column(name = "email_remetente")
     private String emailRemetente;
 
-    @Column(name = "corpo", nullable = false)
+    @Column(name = "corpo")
     private String corpo;
 
-    @Column(name = "data_envio", nullable = false)
+    @Column(name = "data_envio")
     private LocalDate dataEnvio;
 
     @Column(name = "status")

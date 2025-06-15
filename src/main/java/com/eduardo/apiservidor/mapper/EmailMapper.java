@@ -7,6 +7,8 @@ import com.eduardo.apiservidor.model.dto.email.rascunho.RascunhoDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface EmailMapper {
     EmailDTO entityToEmailDto(Email entity);
@@ -15,6 +17,8 @@ public interface EmailMapper {
 
     @Mapping(source = "emailId", target = "rascunhoId")
     RascunhoDTO entityToRascunhoDto(Email entity);
+
+    List<RascunhoDTO> entityToRascunhoDtoList(List<Email> entity);
 
     @Mapping(source = "rascunhoId", target = "emailId")
     Email rascunhoDtoToEmailEntity(RascunhoDTO dto);

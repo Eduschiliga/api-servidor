@@ -1,6 +1,5 @@
-package com.eduardo.apiservidor.model.dto.mensagem;
+package com.eduardo.apiservidor.model.dto.email.rascunho;
 
-import com.eduardo.apiservidor.model.dto.email.rascunho.RascunhoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
