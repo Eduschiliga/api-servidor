@@ -4,7 +4,10 @@ import com.eduardo.apiservidor.entity.email.Email;
 import com.eduardo.apiservidor.entity.usuario.Usuario;
 import com.eduardo.apiservidor.exception.customizadas.email.EmailNaoEncontradoException;
 import com.eduardo.apiservidor.mapper.EmailMapper;
+import com.eduardo.apiservidor.model.dto.email.CriacaoEmailDTO;
 import com.eduardo.apiservidor.model.dto.email.EmailCriacaoDTO;
+import com.eduardo.apiservidor.model.dto.email.EmailDTO;
+import com.eduardo.apiservidor.model.dto.email.EmailListaDTO;
 import com.eduardo.apiservidor.model.dto.email.rascunho.CriacaoRascunhoDTO;
 import com.eduardo.apiservidor.model.dto.email.rascunho.RascunhoDTO;
 import com.eduardo.apiservidor.model.dto.email.rascunho.RascunhoListaDTO;
@@ -31,10 +34,62 @@ public class EmailService {
     private final EmailValidacaoService emailValidacaoService;
 
     @Transactional
+    public CriacaoEmailDTO enviarEmail(EmailCriacaoDTO emailDto, String token) {
+        log.info("Iniciando processo de criação de E-mail.");
+
+        Usuario usuario = authService.findUsuarioEntityByToken(token);
+
+        emailValidacaoService.validarEmail(emailDto);
+
+        Email email = emailMapper.criacaoDtoToEmailEntity(emailDto);
+        email.setEmailRemetente(usuario.getEmail());
+        email.setStatus(StatusEmail.ENVIADO);
+
+        Email emailSalvo = emailRepository.save(email);
+        log.info("E-mail #{} criado com sucesso para o usuário {}.", emailSalvo.getEmailId(), usuario.getEmail());
+
+        return criarRespostaEmail(emailSalvo, "E-mail criado com sucesso");
+    }
+
+    public EmailListaDTO emailTodosEmails(String token) {
+        Usuario usuario = authService.findUsuarioEntityByToken(token);
+
+        List<Email> emailList = emailRepository.buscarEmail(usuario.getEmail());
+        return criarRespostaEmailLista(emailList, "E-mails encontrados");
+    }
+
+    @Transactional
+    public CriacaoEmailDTO buscarEmailPorIdEMarcarComoLido(Long emailId, String token) {
+        Email email = buscarEmailPorId(emailId);
+        email.setStatus(StatusEmail.LIDO);
+        Email emailSalvo = emailRepository.save(email);
+
+        return criarRespostaEmail(emailSalvo, "E-mail buscado e marcado como lido");
+    }
+
+    @Transactional
+    public CriacaoEmailDTO enviarRascunho(Long rascunhoId, String token) {
+        log.info("Iniciando processo de criação de E-mail a partir do Rascunho #{}", rascunhoId);
+
+        Usuario usuario = authService.findUsuarioEntityByToken(token);
+        Email email = buscarRascunhoDoUsuarioPorId(rascunhoId, token);
+        EmailCriacaoDTO emailDto = emailMapper.emailToEmailCriacaoDto(email);
+        emailValidacaoService.validarEmail(emailDto);
+
+        email.setEmailRemetente(usuario.getEmail());
+        email.setStatus(StatusEmail.ENVIADO);
+
+        Email emailSalvo = emailRepository.save(email);
+        log.info("E-mail #{} criado com sucesso para o usuário {}.", emailSalvo.getEmailId(), usuario.getEmail());
+
+        return criarRespostaEmail(emailSalvo, "E-mail criado a partir de um rascunho com sucesso");
+    }
+
+    @Transactional
     public CriacaoRascunhoDTO criarRascunho(EmailCriacaoDTO rascunhoDto, String token) {
         log.info("Iniciando processo de criação de rascunho.");
 
-        emailValidacaoService.validarEmail(rascunhoDto);
+        emailValidacaoService.validarDestinatario(rascunhoDto.getEmailDestinatario());
 
         Usuario usuario = authService.findUsuarioEntityByToken(token);
 
@@ -108,6 +163,16 @@ public class EmailService {
         email.setAssunto(rascunhoDTO.getAssunto());
         email.setCorpo(rascunhoDTO.getCorpo());
         email.setEmailDestinatario(rascunhoDTO.getEmailDestinatario());
+    }
+
+    private EmailListaDTO criarRespostaEmailLista(List<Email> email, String mensagem) {
+        List<EmailDTO> emailList = emailMapper.entityListToEmailListDto(email);
+        return new EmailListaDTO(mensagem, emailList);
+    }
+
+    private CriacaoEmailDTO criarRespostaEmail(Email email, String mensagem) {
+        EmailDTO rascunhoDto = emailMapper.entityToEmailDto(email);
+        return new CriacaoEmailDTO(mensagem, rascunhoDto);
     }
 
     private CriacaoRascunhoDTO criarRespostaRascunho(Email email, String mensagem) {

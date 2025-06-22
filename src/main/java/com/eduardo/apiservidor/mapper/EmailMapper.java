@@ -13,15 +13,14 @@ import java.util.List;
 public interface EmailMapper {
     EmailDTO entityToEmailDto(Email entity);
 
-    Email emailDtoToEmailEntity(EmailDTO dto);
+    List<EmailDTO> entityListToEmailListDto(List<Email> entity);
 
     @Mapping(source = "emailId", target = "rascunhoId")
     RascunhoDTO entityToRascunhoDto(Email entity);
 
     List<RascunhoDTO> entityToRascunhoDtoList(List<Email> entity);
 
-    @Mapping(source = "rascunhoId", target = "emailId")
-    Email rascunhoDtoToEmailEntity(RascunhoDTO dto);
-
     Email criacaoDtoToEmailEntity(EmailCriacaoDTO dto);
+
+    EmailCriacaoDTO emailToEmailCriacaoDto(Email dto);
 }

@@ -39,6 +39,11 @@ public class Email {
     @Column(name = "status")
     private StatusEmail status;
 
+    @PreUpdate
+    public void preUpdate() {
+        setDataEnvio(LocalDate.now());
+    }
+
     @PrePersist
     public void prePersist(){
         setEmailId(null);

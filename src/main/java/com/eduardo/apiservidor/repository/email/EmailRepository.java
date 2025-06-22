@@ -11,4 +11,8 @@ import java.util.List;
 public interface EmailRepository extends JpaRepository<Email, Long> {
     @Query("FROM Email WHERE emailRemetente = ?1 AND status = 0 ORDER BY emailId DESC")
     List<Email> buscarRascunhos(String email);
+
+    @Query("FROM Email WHERE emailDestinatario = ?1 AND (status = 1 OR status = 2) ORDER BY emailId DESC")
+    List<Email> buscarEmail(String email);
+
 }

@@ -25,10 +25,11 @@ public class RascunhoController {
         return ResponseEntity.ok().body(emailService.criarRascunho(emailCriacaoDTO, token));
     }
 
-    @PutMapping()
+    @PutMapping("{rascunhoId}")
     @CrossOrigin("*")
-    @Operation(summary = "Cria um Rascunho de um usuário")
-    public ResponseEntity<CriacaoRascunhoDTO> handleAtualizar(@RequestBody RascunhoDTO rascunhoDTO, @RequestHeader("Authorization") String token) {
+    @Operation(summary = "Atualiza um Rascunho de um usuário")
+    public ResponseEntity<CriacaoRascunhoDTO> handleAtualizar(@PathVariable Long rascunhoId, @RequestBody RascunhoDTO rascunhoDTO, @RequestHeader("Authorization") String token) {
+        rascunhoDTO.setRascunhoId(rascunhoId);
         return ResponseEntity.ok().body(emailService.atualizarRascunho(rascunhoDTO, token));
     }
 
