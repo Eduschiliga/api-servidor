@@ -47,6 +47,7 @@ public class UsuarioService {
 
             usuario.setUsuarioId(null);
             usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+            usuario.setAtivo(true);
 
             usuario = usuarioRepository.save(usuario);
             log.info("Usuário salvo com sucesso: {}", usuario);
@@ -100,7 +101,9 @@ public class UsuarioService {
         log.info("Deletar usuário do Token: {}", token);
         Usuario usuario = authService.findUsuarioEntityByToken(token);
 
-        usuarioRepository.delete(usuario);
+        usuario.setAtivo(false);
+        usuarioRepository.save(usuario);
+//        usuarioRepository.delete(usuario);
         log.info("Usuário deletado com sucesso");
     }
 
