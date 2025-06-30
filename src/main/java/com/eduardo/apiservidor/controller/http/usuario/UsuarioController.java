@@ -1,4 +1,4 @@
-package com.eduardo.apiservidor.controller.usuario;
+package com.eduardo.apiservidor.controller.http.usuario;
 
 import com.eduardo.apiservidor.model.dto.mensagem.MensagemSucessoDTO;
 import com.eduardo.apiservidor.model.dto.usuario.AtualizarUsuarioDTO;

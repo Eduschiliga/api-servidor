@@ -1,4 +1,4 @@
-package com.eduardo.apiservidor.controller.auth;
+package com.eduardo.apiservidor.controller.http.auth;
 
 import com.eduardo.apiservidor.model.dto.jwt.TokenDTO;
 import com.eduardo.apiservidor.model.dto.mensagem.MensagemSucessoDTO;

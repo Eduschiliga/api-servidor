@@ -1,4 +1,4 @@
-package com.eduardo.apiservidor.controller.email;
+package com.eduardo.apiservidor.controller.http.email;
 
 import com.eduardo.apiservidor.model.dto.email.EmailCriacaoDTO;
 import com.eduardo.apiservidor.model.dto.email.rascunho.CriacaoRascunhoDTO;

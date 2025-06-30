@@ -5,6 +5,7 @@ import com.eduardo.apiservidor.exception.customizadas.jwt.TokenJWTException;
 import com.eduardo.apiservidor.repository.usuario.UsuarioRepository;
 import com.eduardo.apiservidor.service.jwt.ListaPretaTokenService;
 import com.eduardo.apiservidor.service.jwt.TokenService;
+import com.eduardo.apiservidor.service.usuario.socket.AcaoUsuarioService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     private final TokenService tokenService;
         private final ListaPretaTokenService listaPretaTokenService;
     private final UsuarioRepository usuarioRepository;
+    private final AcaoUsuarioService acaoUsuarioService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -49,6 +51,9 @@ public class SecurityFilter extends OncePerRequestFilter {
                 Usuario usuario = usuarioRepository.findByEmail(subject)
                         .orElseThrow(() -> new TokenJWTException("Usuário associado ao token não encontrado."));
 
+                registrarAcao(subject);
+
+
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -61,6 +66,14 @@ public class SecurityFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+    private void registrarAcao(String subject) {
+        try {
+            acaoUsuarioService.salvarAtividade(subject);
+        } catch (Exception e) {
+            log.error("Erro ao registrar ação do usuário");
+        }
     }
 
     private String recuperarToken(HttpServletRequest request) {

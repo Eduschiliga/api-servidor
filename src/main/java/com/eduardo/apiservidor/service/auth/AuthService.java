@@ -5,6 +5,7 @@ import com.eduardo.apiservidor.exception.customizadas.usuario.UsuarioNaoEncontra
 import com.eduardo.apiservidor.model.request.LoginRequest;
 import com.eduardo.apiservidor.repository.usuario.UsuarioRepository;
 import com.eduardo.apiservidor.service.jwt.TokenService;
+import com.eduardo.apiservidor.service.usuario.socket.AcaoUsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class AuthService implements UserDetailsService {
     private final UsuarioRepository usuarioRepository;
     private final TokenService tokenService;
     private final ApplicationContext applicationContext;
+    private final AcaoUsuarioService acaoUsuarioService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -62,13 +64,25 @@ public class AuthService implements UserDetailsService {
 
         log.info("Autenticando credenciais para o email: {}", loginRequest.getEmail());
         Authentication authentication = authenticationManager.authenticate(usernamePassAuthToken);
+
         log.info("Usuário autenticado com sucesso.");
+
+        registrarAcao(authentication);
 
         log.info("Gerando token JWT para o usuário: {}", ((Usuario) authentication.getPrincipal()).getEmail());
         String token = tokenService.gerarToken((Usuario) authentication.getPrincipal());
         log.info("Token gerado com sucesso: {}", token);
 
         return token;
+    }
+
+    private void registrarAcao(Authentication authentication) {
+        try {
+            Usuario usuarioAutenticado = (Usuario) authentication.getPrincipal();
+            acaoUsuarioService.usuarioLogado(usuarioAutenticado.getEmail());
+        } catch (Exception e) {
+            log.error("Erro ao adicionar ação do usuário");
+        }
     }
 }
 

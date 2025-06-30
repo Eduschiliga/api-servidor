@@ -30,7 +30,8 @@ public class SecurityConfig {
                             "/swagger-ui/**",
                             "/v3/api-docs/**",
                             "/swagger-resources/**",
-                            "/swagger-ui.html"
+                            "/swagger-ui.html",
+                            "/socket/**"
                     ).permitAll();
 
                     requests.requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll();

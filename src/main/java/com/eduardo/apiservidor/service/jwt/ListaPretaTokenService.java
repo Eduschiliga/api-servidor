@@ -4,6 +4,7 @@ import com.eduardo.apiservidor.entity.jwt.TokenInvalido;
 import com.eduardo.apiservidor.exception.customizadas.jwt.TokenJWTException;
 import com.eduardo.apiservidor.model.dto.mensagem.MensagemSucessoDTO;
 import com.eduardo.apiservidor.repository.jwt.TokenInvalidoRepository;
+import com.eduardo.apiservidor.service.usuario.socket.AcaoUsuarioService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import java.util.Date;
 public class ListaPretaTokenService {
     private final TokenInvalidoRepository invalidatedTokenRepository;
     private final TokenService tokenService;
+    private final AcaoUsuarioService acaoUsuarioService;
 
     @Transactional
     public MensagemSucessoDTO adicionarNaListaPreta(String tokenJwt) {
@@ -29,17 +31,27 @@ public class ListaPretaTokenService {
         String token = tokenJwt.replace("Bearer ", "");
 
         try {
+            String email = tokenService.getSubject(token);
             Date dataExpiracao = tokenService.getDataExpiracao(token);
             if (dataExpiracao != null) {
                 TokenInvalido invalidatedToken = new TokenInvalido(token, dataExpiracao);
                 invalidatedTokenRepository.save(invalidatedToken);
                 log.info("Token adicionado à lista de tokens invalidos: {}", token);
+                registrarAcao(email);
                 return new MensagemSucessoDTO("Token adicionado à lista de tokens invalidos");
             }
             log.warn("Não foi possível obter a data de expiração para o token: {}", token);
             throw new TokenJWTException("Não foi possível obter a data de expiração para o token");
         } catch (Exception e) {
             throw new TokenJWTException(e.getMessage());
+        }
+    }
+
+    private void registrarAcao(String email) {
+        try {
+            acaoUsuarioService.usuarioDesconectado(email);
+        } catch (Exception e) {
+            log.error("Erro ao adicionar ação do usuário");
         }
     }
 
